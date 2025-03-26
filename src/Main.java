@@ -1,20 +1,30 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         List<Employee> employees = initEmployees();
-        var map = employees.stream()
+        var result = employees.stream()
                 .filter(e -> e.getAge() >= 30 && e.getAge() <= 50)
                 .filter(e -> e.getSalary() > 60_000)
                 .flatMap(e -> e.getProjects().stream())
                 .filter(p -> p.getDuration() > 6)
                 .collect(Collectors.groupingBy(
                         p -> p.getName().toUpperCase(),
+                        LinkedHashMap::new,
                         Collectors.averagingInt(Project::getDuration))
+                )
+                .entrySet()
+                .stream()
+                .sorted(Comparator.comparingDouble(Map.Entry::getValue))
+                .collect(Collectors.toMap(
+                        e -> e.getKey(),
+                        e -> e.getValue(),
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new)
                 );
-        System.out.println(map);
+
+        System.out.println(result);
     }
 
     private static ArrayList<Employee> initEmployees() {
