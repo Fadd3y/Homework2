@@ -16,7 +16,7 @@ public class Main {
                 )
                 .entrySet()
                 .stream()
-                .sorted(Comparator.comparingDouble(Map.Entry::getValue))
+                .sorted((e1, e2) -> Double.compare(e1.getValue(), e2.getValue()) * -1)
                 .collect(Collectors.toMap(
                         e -> e.getKey(),
                         e -> e.getValue(),
